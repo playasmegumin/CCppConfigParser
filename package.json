@@ -1,0 +1,102 @@
+{
+  "name": "ccpp-config-parser",
+  "displayName": "C/C++ Config Parser",
+  "description": "Parse Linux Kernel style .config files and apply macro definitions to C/C++ IntelliSense",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Debuggers"
+  ],
+  "keywords": [
+    "C",
+    "C++",
+    "config",
+    "kernel",
+    "defines",
+    "macros",
+    "intellisense"
+  ],
+  "activationEvents": [
+    "onConfigurationChanged:ccppConfigParser.enabled",
+    "onConfigurationChanged:ccppConfigParser.configFilePath"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "C/C++ Config Parser",
+      "properties": {
+        "ccppConfigParser.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "启用.config宏定义解析功能",
+          "order": 1
+        },
+        "ccppConfigParser.configFilePath": {
+          "type": "string",
+          "default": "",
+          "description": ".config文件的绝对路径（例如: /home/user/project/.config 或 /home/user/project/include/generated/autoconf.h）",
+          "order": 2
+        },
+        "ccppConfigParser.watchFile": {
+          "type": "boolean",
+          "default": true,
+          "description": "监控.config文件变化并自动更新",
+          "order": 3
+        },
+        "ccppConfigParser.backupDefines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "【自动维护】禁用功能时用于恢复原始配置",
+          "scope": "window"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "ccppConfigParser.reloadConfig",
+        "title": "重新加载.config文件",
+        "category": "C/C++ Config"
+      },
+      {
+        "command": "ccppConfigParser.clearConfig",
+        "title": "清除宏定义配置",
+        "category": "C/C++ Config"
+      },
+      {
+        "command": "ccppConfigParser.showOutput",
+        "title": "显示输出日志",
+        "category": "C/C++ Config"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "@vscode/test-electron": "^2.2.0",
+    "@vscode/vsce": "^2.15.0",
+    "eslint": "^8.28.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "typescript": "^4.9.4"
+  }
+}

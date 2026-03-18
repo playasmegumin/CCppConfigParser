@@ -1,0 +1,23 @@
+out
+dist
+node_modules
+.vscode-test/
+*.vsix
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Coverage
+coverage/
+.nyc_output/
