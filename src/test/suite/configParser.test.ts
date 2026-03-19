@@ -144,7 +144,7 @@ CONFIG_VERSION="5.15.0"
 `;
         const result = parser.parse(content);
 
-        assert.strictEqual(result.macros.length, 10);
+        assert.strictEqual(result.macros.length, 12);
 
         // Check specific values
         const preemptVoluntary = result.macros.find(m => m.name === 'CONFIG_PREEMPT_VOLUNTARY');

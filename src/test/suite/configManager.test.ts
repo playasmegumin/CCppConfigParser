@@ -10,8 +10,18 @@ suite('ConfigManager Test Suite', () => {
     const CONFIG_SECTION = 'ccppConfigParser';
     const CPP_CONFIG_SECTION = 'C_Cpp';
 
+    // Check if we have a workspace
+    const hasWorkspace = () => {
+        return vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0;
+    };
+
     setup(async () => {
         configManager = new ConfigManager();
+
+        // Skip workspace-related setup if no workspace
+        if (!hasWorkspace()) {
+            return;
+        }
 
         // Clean up any existing configuration
         const config = vscode.workspace.getConfiguration(CONFIG_SECTION);
@@ -24,6 +34,12 @@ suite('ConfigManager Test Suite', () => {
     });
 
     teardown(async () => {
+        // Skip workspace-related cleanup if no workspace
+        if (!hasWorkspace()) {
+            configManager.dispose();
+            return;
+        }
+
         // Cleanup after tests
         const config = vscode.workspace.getConfiguration(CONFIG_SECTION);
         await config.update('enabled', false, vscode.ConfigurationTarget.Workspace);
@@ -66,7 +82,12 @@ suite('ConfigManager Test Suite', () => {
         assert.ok(result.error?.includes('绝对路径'));
     });
 
-    test('should backup and restore original defines', async () => {
+    test('should backup and restore original defines', async function() {
+        if (!hasWorkspace()) {
+            this.skip();
+            return;
+        }
+
         // Set some original defines
         const cppConfig = vscode.workspace.getConfiguration(CPP_CONFIG_SECTION);
         const originalDefines = ['ORIGINAL_1=1', 'ORIGINAL_2=2'];
@@ -95,7 +116,12 @@ suite('ConfigManager Test Suite', () => {
         assert.deepStrictEqual(clearedBackup, []);
     });
 
-    test('should apply macro defines to C_Cpp configuration', async () => {
+    test('should apply macro defines to C_Cpp configuration', async function() {
+        if (!hasWorkspace()) {
+            this.skip();
+            return;
+        }
+
         const macros = [
             { name: 'CONFIG_FEATURE_A', value: 'y' },
             { name: 'CONFIG_FEATURE_B', value: 'n' },
@@ -123,7 +149,12 @@ suite('ConfigManager Test Suite', () => {
         assert.strictEqual(result.appliedCount, 0);
     });
 
-    test('should only backup once (prevent overwriting backup with our own defines)', async () => {
+    test('should only backup once (prevent overwriting backup with our own defines)', async function() {
+        if (!hasWorkspace()) {
+            this.skip();
+            return;
+        }
+
         const cppConfig = vscode.workspace.getConfiguration(CPP_CONFIG_SECTION);
         const originalDefines = ['ORIGINAL=1'];
         await cppConfig.update('default.defines', originalDefines, vscode.ConfigurationTarget.Workspace);
