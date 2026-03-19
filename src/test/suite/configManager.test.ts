@@ -15,9 +15,12 @@ suite('ConfigManager Test Suite', () => {
         return vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0;
     };
 
-    setup(async () => {
+    suiteSetup(() => {
+        // Create a single ConfigManager instance for all tests
         configManager = new ConfigManager();
+    });
 
+    setup(async () => {
         // Skip workspace-related setup if no workspace
         if (!hasWorkspace()) {
             return;
@@ -36,7 +39,6 @@ suite('ConfigManager Test Suite', () => {
     teardown(async () => {
         // Skip workspace-related cleanup if no workspace
         if (!hasWorkspace()) {
-            configManager.dispose();
             return;
         }
 
@@ -48,8 +50,13 @@ suite('ConfigManager Test Suite', () => {
 
         const cppConfig = vscode.workspace.getConfiguration(CPP_CONFIG_SECTION);
         await cppConfig.update('default.defines', [], vscode.ConfigurationTarget.Workspace);
+    });
 
-        configManager.dispose();
+    suiteTeardown(() => {
+        // Dispose the ConfigManager after all tests
+        if (configManager) {
+            configManager.dispose();
+        }
     });
 
     test('should get configuration defaults', () => {
